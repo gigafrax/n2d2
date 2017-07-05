@@ -1,0 +1,241 @@
+<!--
+   Wifi/WEB based rover driver page
+
+   Written by Scott Beasley - 2015
+
+   Free to use or modify. Enjoy!
+-->
+<html>
+<head>
+<title>R2D2 Control Panel</title>
+<script type="text/javascript">
+//document.onkeypress = keypressed;
+//var last_action = "";
+//var start_dt = new Date();
+//var last_mills = start_dt.getTime();
+
+function sendMotion (action) {
+   /*var run_dt = new Date();
+   var mills = run_dt.getTime();
+
+   // If a dup, ignore if newer than .500ms
+   if (action == last_action && (mills - last_mills) <= 500)
+      return;
+
+   last_mills = mills;
+   last_action = action;*/
+   request = new XMLHttpRequest();
+   request.open("GET", action, true);
+   request.send();
+}
+
+/*function keypressed(event) {
+   var keyCd = ('charCode' in event) ? event.charCode : event.keyCode;
+
+   if (keyCd == 49)            // 1
+      sendMotion ('panlt')
+
+   if (keyCd == 50)            // 2
+      sendMotion ('panrt')
+
+   if (keyCd == 51)            // 3
+      sendMotion ('panfull_lt')
+
+   if (keyCd == 52)
+      sendMotion ('panfull_rt') // 4
+
+   if (keyCd == 47)            // /
+      sendMotion ('home')
+
+   if (keyCd == 113 || keyCd == 81)  // q
+      sendMotion ('ltforward')
+
+   if (keyCd == 119 || keyCd == 87)  // w
+      sendMotion ('forward')
+
+   if (keyCd == 122 || keyCd == 90)  // z
+      sendMotion ('backward')
+
+   if (keyCd == 101 || keyCd == 69)  // e
+      sendMotion ('rtforward')
+
+   if (keyCd == 97 || keyCd == 65)   // a
+      sendMotion ('left')
+
+   if (keyCd == 104 || keyCd == 72)  // h
+      sendMotion ('stop')
+
+   if (keyCd == 115 || keyCd == 83)  // s
+      sendMotion ('right')
+}*/
+
+</script>
+   <style>
+      html,body,iframe{margin:0;padding:0;font-family:Arial;font-size: 14px;line-height: 1;}
+
+      /* Contenitore per l'iframe e il titolo */
+      .live-stream {position: relative; margin: auto; display: inline-block;text-align: left}
+
+      /* Questa è l'ombra, se non ti piace, rimuovila... */
+      .live-stream {box-shadow: 1px 0px 4px 0px rgba(0,0,0,0.2);border: 1px solid rgba(0,0,0,0.1);}
+
+      .live-stream h1{color: #000000; font-size: 16px; position: absolute; padding: 0 5px; line-height: 1.3; background-color: rgba(255, 255, 255, 0.8); top:1px; right:1px;  margin:0;}
+      .live-stream iframe {width:100vw;height:75vw;max-width:640px;max-height:480px;border:0;background-color:#eceef1;}
+
+      /* telecomando */
+      /* Nota: Cambiando il 'margin-top:0px;' con un valore negativo il telecomando si sovrappone al video (ex: margin-top:-265px;) */
+      /* Cambiando 'max-width' puoi fissare le dimensioni massime del telecomando (ex: max-width:640px;) per averlo delle dimensioni del video */
+      .remote{margin-top:-13px; max-width:348px; position:relative; z-index:10; width:100%;background-color: rgba(0, 0, 0, 0.05); border-collapse:collapse;-webkit-user-select:none;-moz-user-select: none;user-select: none;}
+      .remote th{text-transform: uppercase;background-color: rgba(0, 77, 147, 0.6);color:#fff;padding:0;font-size: 12px;border:1px solid rgba(0, 0, 0, 0.05);}
+      .remote th input {margin:0 5px;vertical-align: middle;}
+      .remote th span {line-height: 2;vertical-align: middle;}
+      .remote td {font-size: 12px; line-height: 1.2;border:1px solid rgba(0, 0, 0, 0.05);padding: 5px 0; min-height: 80px;}
+   </style>
+</head>
+<body>
+<center>
+   <div class="live-stream">
+      <h1>R2D2</h1>
+      <iframe src="http://192.168.0.5:9000/javascript_simple.html" width="640" height="480"></iframe>
+   </div>
+   <table class="remote" border="0" cellpadding="6">
+     <tr>
+       <td align="center">
+          Pan
+          <br>
+          <input type="hidden" name="leanforward" id="leanforward" />
+          <input type="image" src="../static/r2leanforward.png"
+          id="r2leanforward" onclick="sendMotion ('leanforward');"/>
+        </td>
+        <td align="center">
+          <input type="hidden" name="stand" id="stand" />
+          <input type="image" src="../static/r2upright.png"
+          id="stand" onclick="sendMotion ('stand');"/>
+        </td>
+        <td align="center">
+          <input type="hidden" name="leanbackward" id="leanbackward" />
+          <input type="image" src="../static/r2leanbackward.png"
+          id="r2leanbackward" onclick="sendMotion ('leanbackward');"/>
+        </br>
+       </td>
+     </tr>
+      <tr>
+         <td align="center">
+            Pan
+            <br>
+            <input type="hidden" name="panlt" id="panlt" />
+            <input type="image" src="../static/1leftarrow.png"
+            id="imgpanlt" onclick="sendMotion ('panlt');"
+            onkeypress="keypressed (event);"/>
+            <input type="hidden" name="panrt" id="panrt" />
+            <input type="image" src="../static/1rightarrow.png"
+            id="imgpanrt" onclick="sendMotion ('panrt');"/>
+         </td>
+         <td align="center">
+            Home
+            <br>
+            <input type="hidden" name="homecam" id="homecam" />
+            <input type="image" src="../static/gohome.png"
+            id="imghome" onclick="sendMotion ('home');"/>
+         </td>
+         <td align="center">
+            Full Pan
+            <br>
+            <input type="hidden" name="panfull_lt" id="panfull_lt" />
+            <input type="image" src="../static/arrow-left-double.png"
+            id="imgpanall_lt" onclick="sendMotion ('panfull_lt');"
+            onkeypress="keypressed (event);"/>
+            <input type="hidden" name="panfull_rt" id="panfull_rt" />
+            <input type="image" src="../static/arrow-right-double.png"
+            id="imgpanall_rt" onclick="sendMotion ('panfull_rt');"/>
+         </td>
+      </tr>
+      <tr>
+         <td align="center">
+            Left-Forward
+            <br>
+            <input type="hidden" name="ltforward" value="0" id="ltforward" />
+            <input type="image" src="../static/arrow_up_left.png"
+            id="imgLtforward" onclick="sendMotion ('ltforward');"/>
+         </td>
+         <td align="center">
+            Forward
+            <br>
+            <input type="hidden" name="forward" value="0" id="forward" />
+            <input type="image" src="../static/forward.png" id="imgforward"
+            onclick="sendMotion ('forward');"/>
+         </td>
+         <td align="center">
+            Right-Forward
+            <br>
+            <input type="hidden" name="rtforward" value="0" id="rtforward" />
+            <input type="image" src="../static/arrow_up_right.png"
+            id="imgRtforward" onclick="sendMotion ('rtforward');"/>
+         </td>
+      </tr>
+      <tr>
+         <td align="center">
+            Left
+            <br>
+            <input type="hidden" name="left" value="0" id="left" />
+            <input type="image" src="../static/left.png" id="imgleft"
+            onclick="sendMotion ('left');"/>
+         </td>
+         <td align="center">
+            Stop
+            <br>
+            <input type="hidden" name="stop" value="0" id="stop" />
+            <input type="image" src="../static/stop.png" width="50" id="imgstop"
+            onclick="sendMotion ('stop');"/>
+         </td>
+         <td align="center">
+            Right
+            <br>
+            <input type="hidden" name="right" value="0" id="right" />
+            <input type="image" src="../static/right.png" id="imgright"
+            onclick="sendMotion ('right');">
+         </td>
+      </tr>
+      <tr>
+         <td align="center">
+            Left-Backward
+            <br>
+            <input type="hidden" name="ltbackward" value="0" id="ltforward" />
+            <input type="image" src="../static/arrow_down_left.png"
+            id="imgltback" onclick="sendMotion ('ltbackward');"/>
+         </td>
+         <td align="center">
+            Backward
+            <br>
+            <input type="hidden" name="backward" value="0" id="backward" />
+            <input type="image" src="../static/backward.png" id="imgbackward"
+            onclick="sendMotion ('backward');"/>
+         </td>
+         <td align="center">
+            Right-Backward
+            <br>
+            <input type="hidden" name="rtbackward" value="0" id="rtforward" />
+            <input type="image" src="../static/arrow_down_right.png"
+            id="imgrtback" onclick="sendMotion ('rtbackward');"/>
+         </td>
+      </tr>
+      <tfoot>
+      <tr>
+         <th align="center"><label>
+            <input type="radio" name="speed" value="42" id="speed_low"
+            onclick="sendMotion ('speed_low');"><span>Low speed</span></label>
+         </th>
+         <th align="center"><label>
+            <input type="radio" name="speed" value="84" id="speed_mid"
+            onclick="sendMotion ('speed_mid');" checked><span>Mid speed</span></label>
+         </th>
+         <th align="center"><label>
+            <input type="radio" name="speed" value="126" id="speed_hi"
+            onclick="sendMotion ('speed_hi');"><span>High speed</span></label>
+         </th>
+      </tr>
+      </tfoot>
+   </table>
+</center>
+<body>
+</html>

@@ -1,0 +1,169 @@
+var http  = require ('http');
+
+var path = require ('path');
+
+var express = require ('express');
+
+var piblaster = require ('pi-blaster.js');
+
+var app = express();
+
+app.use(express.static(__dirname));
+
+var servoPin = 18;
+
+var servoHome = 0.1;
+var servoRight = 0.25;
+var servoLeft = 0.05;
+var servoCurrentPos = 0.1;
+
+var legRthrottle = 22; //pin for PWM
+var legRspeed = 0;
+var legLthrottle = 27; //pin for PWM
+var legLspeed = 0;
+
+var legRgear = 17; //pin for direction
+var legRdir = 0; //only 0 or 1  
+var legLgear = 4; //pin for direction
+var legLdir = 0; //only 0 or 1
+
+
+//forward function
+
+app.get('/forward', function(req, res){
+       piblaster.setPwm(legRthrottle, 1);
+       piblaster.setPwm(legLthrottle, 1);
+       piblaster.setPwm(legRgear, 1);
+       piblaster.setPwm(legLgear, 0);
+       res.end('Going forward');
+});
+
+//back function
+
+app.get('/backward', function(req, res){
+       piblaster.setPwm(legRthrottle, 1);
+       piblaster.setPwm(legLthrottle, 1);
+       piblaster.setPwm(legRgear, 0);
+       piblaster.setPwm(legLgear, 1);
+       res.end('Going back');
+});
+
+
+//left function
+
+app.get('/left', function(req, res){
+       piblaster.setPwm(legRthrottle, 1);
+       piblaster.setPwm(legLthrottle, 1);
+       piblaster.setPwm(legRgear, 1);
+       piblaster.setPwm(legLgear, 1);
+       res.end('turning left');
+});
+
+//right function
+
+app.get('/right', function(req, res){
+       piblaster.setPwm(legRthrottle, 1);
+       piblaster.setPwm(legLthrottle, 1);
+       piblaster.setPwm(legRgear, 0);
+       piblaster.setPwm(legLgear, 0);
+       res.end('turning right');
+});
+
+
+
+
+//stop function
+
+app.get('/stop', function(req, res){
+       piblaster.setPwm(legRthrottle, 0);
+       piblaster.setPwm(legLthrottle, 0);
+       piblaster.setPwm(legRgear, 0);
+       piblaster.setPwm(legLgear, 0);
+       res.end('stop');
+});
+
+
+//panlt function
+app.get('/panlt', function(req, res){
+       if (servoCurrentPos> servoLeft) {
+         servoCurrentPos -= 0.01;
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+         res.end('panning left');
+       } else {
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+       }
+});
+
+//panrt function
+app.get('/panrt', function(req, res){
+       if (servoCurrentPos< servoRight) {
+         servoCurrentPos += 0.01;
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+         res.end('panning right');
+       } else {
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+       }
+});
+
+//camera home  function
+app.get('/homecam', function(req, res){
+         servoCurrentPos = servoHome;
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+         res.end('camera home position');
+       
+});
+
+
+//camera full right  function
+app.get('/panfull_rt//camera full right  function
+app.get('/panfull_rt', function(req, res){
+         servoCurrentPos = servoRight;
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+         res.end('camera right position');
+
+});
+', function(req, res){
+         servoCurrentPos = servoRight;
+         piblaster.setPwm =(servoPin, servoCurrentPos);
+         res.end('camera right position');
+
+});
+
+
+
+
+
+
+       
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/templates/index.html'));
+});
+
+
+//express route for unrecognised incoming requests
+app.get('*', function(req, res){
+       res.status(404).send('Unrecognised API call');
+});
+
+//express route to handle errors
+app.use(function(err, req, res, next){
+       if (req.xhr){
+          res.status(500).send('Oops, something went wrong');
+       } else {
+          next(err);
+       }
+});
+
+
+
+
+//on clrl-c, put stuff here to execute before closing your server with ctrl-c
+process.on('SIGINT', function() {
+ var i;
+ console.log("\nGracefully shutting down from SIGINT (Ctrl+C)");
+ process.exit();
+});
+
+app.listen(3000);
+console.log('App running port 3000');
+       
